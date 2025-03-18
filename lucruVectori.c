@@ -82,23 +82,23 @@ void copiazaProduseScumpe(struct Produs* produse, int nrProduse, struct Produs**
 }
 
 int main() {
-	/*struct Produs produs1;
-	produs1 = initializare(1, "Pateu", 5.5);*/
-	/*afisare(produs1);*/
-	//modificaPret(&produs1, 4.75);
-	/*afisare(produs1);*/
-	/*modificaNume(&produs1, "Mustar");
-	afisare(produs1);*/
-	/*struct Produs produs2 = initializare(2, "Fasole", 11);
-	struct Produs produs3 = initializare(3, "Oloi", 15);
+	struct Produs produs1;
+	produs1 = initializare(1, "Rosii", 5.5);
+	afisare(produs1);
+	modificaPret(&produs1, 4.75);
+	afisare(produs1);
+	modificaNume(&produs1, "Mustar");
+	afisare(produs1);
+	struct Produs produs2 = initializare(2, "Fasole", 11);
+	struct Produs produs3 = initializare(3, "Ulei", 15);
 	afisare(produs2);
-	afisare(produs3);*/
+	afisare(produs3);
 	struct Produs* produse = NULL;
 	int nrProduse = 3;
 	produse = (struct Produs*)malloc(sizeof(struct Produs) * nrProduse);
-	produse[0] = initializare(1, "Pateu", 5.5);
+	produse[0] = initializare(1, "Rosii", 5.5);
 	produse[1] = initializare(2, "Fasole", 11);
-	produse[2] = initializare(3, "Oloi", 15);
+	produse[2] = initializare(3, "Ulei", 15);
 	afisareVector(produse, 3);
 	struct Produs* produseNoi = NULL;
 	int nrProduseScumpe = 0;
