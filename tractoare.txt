@@ -1,0 +1,6 @@
+1,"Landini","Power Farm",120,1200
+2,"Case","Puma",250,700
+3,"John Deere","8R",156,3210;
+4,"Massey Ferguson","7726S",302,15
+5,"New Holland","T6",145,114
+6,"Claas","Power",302,0
