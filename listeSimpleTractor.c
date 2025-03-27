@@ -28,13 +28,12 @@ Tractor citireTractorFisier(FILE* fisier) {
 	tractor.id = atoi(strtok(buffer, sep));
 	
 	aux = strtok(NULL, sep);
-	tractor.producator = (char*)malloc(strlen(aux) + 1);
+	tractor.producator = malloc(strlen(aux) + 1);
 	strcpy(tractor.producator, aux);
 
-	char* aux1;
-	aux1 = strtok(NULL, sep);
-	tractor.model = (char*)malloc(strlen(aux1) + 1);
-	strcpy(tractor.model, aux1);
+	aux = strtok(NULL, sep);
+	tractor.model = malloc(strlen(aux) + 1);
+	strcpy(tractor.model, aux);
 
 	tractor.caiPutere = atoi(strtok(NULL, sep));
 	tractor.nrOre = atof(strtok(NULL, sep));
@@ -87,7 +86,7 @@ Nod* citireListaTractoareDinFisier(const char* numeFisier) {
 	FILE* f = fopen(numeFisier, "r");
 	if(f)
 	{
-		while (f != NULL) {
+		while (!feof(f)) {
 			adaugaTractorInLista(&cap, citireTractorFisier(f));
 		}
 	}
@@ -111,8 +110,78 @@ void dezalocareLista(Nod** cap) {
 	}
 }
 
+float medieOre(Nod* cap) {
+	float suma = 0;
+	int nrTractoare = 0;
+	while (cap != NULL) {
+		suma += cap->info.nrOre;
+		nrTractoare++;
+		cap = cap->next;
+	}
+	if (nrTractoare == 0)
+		return 0;
+	else
+		return suma / nrTractoare;
+}
+
+float medieCaiTractoareAcelasiProducator(Nod* cap, const char* producator) {
+	int suma = 0;
+	int nrTractoare = 0;
+	while (cap != NULL) {
+		if (strcmp(cap->info.producator, producator) == 0) {
+			suma += cap->info.caiPutere;
+			nrTractoare++;
+		}
+		cap = cap->next;
+	}
+	if (nrTractoare == 0)
+		return 0;
+	else
+		return suma / nrTractoare;
+}
+
+void stergereTractorProducator(Nod** cap, const char* producator) {
+	while ((*cap) && strcmp((*cap)->info.producator, producator) == 0) {
+		Nod* aux = *cap;
+		(*cap) = aux->next;
+		if (aux->info.producator)
+			free(aux->info.producator);
+		if (aux->info.model)
+			free(aux->info.model);
+		free(aux);
+	}
+	if ((*cap)) {
+		Nod* p = *cap;
+		while (p) {
+			while (p->next && strcmp(p->next->info.producator, producator) != 0) {
+				p = p->next;
+			}
+			if (p->next) {
+				Nod* aux = p->next;
+				p->next = aux->next;
+				if (aux->info.producator)
+					free(aux->info.producator);
+				if (aux->info.model)
+					free(aux->info.model);
+				free(aux);
+			}
+			else {
+				p = p->next;
+			}
+		}
+	}
+}
+
 
 int main() {
-	
+	Nod* cap = citireListaTractoareDinFisier("tractoare.txt");
+	afisareListaTractoare(cap);
+	float medie = medieOre(cap);
+	printf("\nmedie ore %f \n", medie);
+	float medie2 = medieCaiTractoareAcelasiProducator(cap, "Landini");
+	printf("\nmedie ore landini %f \n", medie2);
+	printf("\nstergere tractor\n");
+	stergereTractorProducator(&cap, "Landini");
+	afisareListaTractoare(cap);
 	return 0;
 }
