@@ -49,43 +49,27 @@ ContBancar citireContBancarDinFisier(FILE* f) {
 
 }
 
-void afisareLista(ListaDubla lista) {
-	Nod* nod = lista.first;
-	while (nod) {
-		afisareContBancar(nod->info);
-		nod = nod->next;
+void afisareListaDubla(ListaDubla lista) {
+	Nod* p = lista.first;
+	while (p) {
+		afisareContBancar(p->info);
+		p = p->next;
 	}
 }
-void afisareListaInvers(ListaDubla lista) {
-	Nod* nod = lista.last;
-	while (lista.last)
-	{
-		afisareContBancar(nod->info);
-		nod = nod->prev;
-	}
 
+void afisareListaDublaCoada(ListaDubla lista) {
+	Nod* p = lista.last;
+	while (p) {
+		afisareContBancar(p->info);
+		p = p->prev;
+	}
 }
 
-void insereazaNodLaInceput(ListaDubla* lista, ContBancar cont) {
+void adaugaNodInLista(ListaDubla* lista, ContBancar cont) {
 	Nod* nodNou = (Nod*)malloc(sizeof(Nod));
 	nodNou->info = cont;
-	nodNou->prev = NULL;
-	nodNou->next = lista->first;
-	if (lista->first) {
-		lista->first->prev = nodNou;
-	}
-	else {
-		lista->last = nodNou;
-	}
-	lista->first = nodNou;
-	lista->nrNoduri++;
-}
-
-void insereazaNodLaSfarsit(ListaDubla* lista, ContBancar cont) {
-	Nod* nodNou = (Nod*)malloc(sizeof(Nod));
-	nodNou->info = cont;
-	nodNou->prev = lista->last;
 	nodNou->next = NULL;
+	nodNou->prev = lista->last;
 	if (lista->last) {
 		lista->last->next = nodNou;
 	}
@@ -95,37 +79,52 @@ void insereazaNodLaSfarsit(ListaDubla* lista, ContBancar cont) {
 	lista->last = nodNou;
 	lista->nrNoduri++;
 }
+void adaugaNodInListaInceput(ListaDubla* lista, ContBancar cont) {
+	Nod* nodNou = (Nod*)malloc(sizeof(Nod));
+	nodNou->info = cont;
+	nodNou->next = lista->first;
+	nodNou->prev = NULL;
+	if (lista != NULL) {
+		lista->first->prev = nodNou;
+	}
+	else {
+		lista->last = nodNou;
+	}
+	lista->first = nodNou;
+	lista->nrNoduri++;
+}
 
-ListaDubla citireListaDinFisier(const char* numeFisier) {
+ListaDubla citireListaDublaFisier(const char* numeFisier) {
 	ListaDubla lista;
 	lista.first = NULL;
 	lista.last = NULL;
 	lista.nrNoduri = 0;
 	FILE* f = fopen(numeFisier, "r");
-	while(!feof(f))
-		insereazaNodLaSfarsit(&lista, citireContBancarDinFisier(f));
+	while (!feof(f)) {
+		adaugaNodInLista(&lista, citireContBancarDinFisier(f));
+	}
 	fclose(f);
 	return lista;
 }
 
-void dezalocareLista(ListaDubla* lista) {
-	Nod* aux = lista->first;
-	while (aux) {
-		Nod* p = aux;
-		if (p->info.titular)
-			free(p->info.titular);
-		if (p->info.tranzactii)
-			free(p->info.tranzactii);
-		free(p);
-		aux = aux->next;
-	}1
+void dezalocareListaDubla(ListaDubla* lista) {
+	Nod* p = lista->first;
+	while (p) {
+		Nod* aux = p;
+		p = p->next;
+		if (aux->info.titular)
+			free(aux->info.titular);
+		if (aux->info.tranzactii)
+			free(aux->info.tranzactii);
+		free(aux);
+	}
 	lista->first = NULL;
 	lista->last = NULL;
 	lista->nrNoduri = 0;
 }
 
 int main() {
-	ListaDubla lista = citireListaDinFisier("contBancar.txt");
-	afisareLista(lista);
-	dezalocareLista(&lista);
+	ListaDubla lista = citireListaDublaFisier("contBancar.txt");
+	afisareListaDubla(lista);
+	dezalocareListaDubla(&lista);
 }
